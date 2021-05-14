@@ -1,25 +1,99 @@
 * {
   box-sizing: border-box;
   margin: 0;
+  outline: none;
+  text-decoration: none;
 }
 
 body {
-  background-color: rgb(34, 34, 31);
+  background-color: #2f2e2f;
 }
 
-.VideoGrid {
+.home {
+  display: flex;
+  flex-direction: column;
+  padding: 70px 130px 50px 80px;
+}
+
+.video-grid {
+  display: grid;
+  grid-row-gap: 70px;
+  grid-template-columns: 340px 340px 340px 340px;
+}
+
+.video-grid-info {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
-  flex-direction: row;
-  flex-wrap: wrap;
+  color: #E2A917;
+  margin-bottom: 50px;
+  margin-left: 100px;
+ 
+}
+
+.video-grid-refresh-btn {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+}
+
+.video-grid-text {
+  margin-left: 10px;
+  font-size: 40px;
+}
+
+.video-card {
+  position: relative;
+  display: flex-start;
+  flex-direction: column;
+  color: #E2A917;
+  width: 320px;
+  height: 200px;
+  padding: 5px 5px 5px 5px;
+}
+
+.video-card-div {
+}
+
+.video-card-info {
+  display: flex-start;
+  flex-direction: column;
+}
+
+.video-card-thumbnail {
+  position: relative;
+}
+
+.video-card-subinfo {
+  display: flex;
+  padding-left: 7px;
+  padding-right: 7px;
+  justify-content: space-between;
 }
 
 .video-card img {
-  width: 400px;
-  height: 300px;
+  width: 300px;
+  height: 180px;
+  border-radius: 20px;
+  z-index: 1;
 }
 
-.video-card p {
-  color:blanchedalmond;
+.video-card-timebox {
+  position: absolute;
+  bottom: 6px;
+  left: 270px;
+  height: 23px;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.178);
+  padding-left: 3px;
+  padding-right: 3px;
+  z-index: 99;
+}
+
+.video-card-info p {
+  text-align: left;
+  color: #E2A917;
 }

@@ -1,33 +1,24 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
+from BetterTube.youtube_api_integration import get_most_popular_videos_in_region, get_authorization_url
+
+
 def index(request):
     return render(request, "build/index.html")
 
-def recommendations(request):
-    recom_array = [{"thumbnail": "https://i.ytimg.com/vi/DHPf_b7T9_M/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLD-4iMY2A0yLu7gYseOr_Gg1x3YGg",
-             "caption": "my roommates cat bites my foot and dies",
-             "link": "https://www.youtube.com/watch?v=DHPf_b7T9_M",
-            },
-            {
-                "thumbnail": "https://i.ytimg.com/vi/DHPf_b7T9_M/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLD-4iMY2A0yLu7gYseOr_Gg1x3YGg",
-                "caption": "my roommates cat bites my foot and dies",
-                "link": "https://www.youtube.com/watch?v=DHPf_b7T9_M",
-            },
-            {
-                "thumbnail": "https://i.ytimg.com/vi/DHPf_b7T9_M/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLD-4iMY2A0yLu7gYseOr_Gg1x3YGg",
-                "caption": "my roommates cat bites my foot and dies",
-                "link": "https://www.youtube.com/watch?v=DHPf_b7T9_M",
-            },
-            {
-                "thumbnail": "https://i.ytimg.com/vi/DHPf_b7T9_M/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLD-4iMY2A0yLu7gYseOr_Gg1x3YGg",
-                "caption": "my roommates cat bites my foot and dies",
-                "link": "https://www.youtube.com/watch?v=DHPf_b7T9_M",
-            },
-            {
-                "thumbnail": "https://i.ytimg.com/vi/DHPf_b7T9_M/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLD-4iMY2A0yLu7gYseOr_Gg1x3YGg",
-                "caption": "my roommates cat bites my foot and dies",
-                "link": "https://www.youtube.com/watch?v=DHPf_b7T9_M",
-            }
-            ]
-    return JsonResponse(recom_array, safe=False)
+def home(request):
+    if request.user.is_authenticated:
+        pass
+    else:
+        return JsonResponse(get_most_popular_videos_in_region("US"), safe=False)
+
+def get_user_data(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'avatar': request.user.avatar_url, 'name': request.user.first_name + ' ' + request.user.last_name})
+    else:
+        return HttpResponse(status=401)
+
+
+def request_authorization_url(request):
+    return JsonResponse({'authorization_url': get_authorization_url()})
