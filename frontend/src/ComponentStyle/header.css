@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;1,100&display=swap');
+
 .hide {
   display: none !important;
 }
@@ -7,29 +9,16 @@
   align-items: center;
   padding-top: 10px;
   padding-bottom: 10px;
-  padding-left: 32px;
-  padding-right: 70px;
+  padding-left: 40px;
+  padding-right: 115px;
   margin-bottom: 30px;
   position: sticky;
+  font-family: 'Roboto', sans-serif;
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #1a1919;
+  background-color: #242222;
   z-index: 100;
-}
-
-.menu-button {
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: #1a1919;
-  width: 20px;
-  height: 17px;
-  border: none;
-  margin-left: 30px;
-  margin-right: 28px;
-  cursor: pointer;
 }
 
 .menu-line {
@@ -40,9 +29,18 @@
   border-radius: 20px;
 }
 
+.menu-btn {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
 .logo {
-  margin-left: 30px;
-  margin-right: 69px;
+  margin-left: 40px;
+  margin-right: 70px;
   width: 150px;
   height: 30px;
 }
@@ -97,8 +95,23 @@
 }
 
 .auth-btn {
-  border: none;
   background-color: transparent;
+  border-color: #e2a917;
+  width: 90px;
+  height: 40px;
+  text-align: center;
+  margin-left: 50px;
+  cursor: pointer;
+  border: solid 2px 2px;
+  color: #e2a917;
+}
+
+.spinner {
+  margin-right: 35px;
+}
+
+.auth-btn:hover {
+  background-color: #e2a8173d;
 }
 
 .user {

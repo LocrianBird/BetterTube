@@ -9,33 +9,29 @@ class Auth extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      type: props.token != null ? this.Type.LOADING : this.Type.NOT_LOGGED_IN,
+      type: this.Type.LOADING,
       user: null,
     }
   }
+  
 
   componentDidMount(){
-    if (this.props.token != null) {
-      let config = {
-        headers: {
-          Authorization: `Bearer ${this.props.token}`,
-        }
-      }
-      axios.get(window.location.origin + '/userData', config)
-      .then(res=>{
-        console.log(res.data);
-        this.setState({
-          user: res.data
-        })
+    axios.get(window.location.origin + '/get_user_data')
+    .then(res=>{
+      console.log(res.data);
+      this.setState({
+        user: res.data,
+        type: this.Type.LOGGED_IN 
       })
-      .catch(err=>{
-        console.log(err);
+    })
+    .catch(err=>{
+      this.setState({
+        type: this.Type.NOT_LOGGED_IN 
       })
-    }
+    })
   }
 
   
-
   onSigninClicked() {
     this.setState({
       type: this.Type.LOADING
@@ -49,8 +45,9 @@ class Auth extends React.Component {
     })
   }
 
-  render(){
-    switch(this.state.type) {
+
+  renderByType(type){
+    switch(type) {
       case this.Type.LOGGED_IN: 
         return(
           <div className="auth">
@@ -61,19 +58,26 @@ class Auth extends React.Component {
       case this.Type.NOT_LOGGED_IN:
         return(
           <div className="auth">
-            <button onClick={this.onSigninClicked.bind(this)} class="auth-btn"><span class="auth-btn-text">Sign In</span></button>
+            <button onClick={this.onSigninClicked.bind(this)} className="auth-btn">Sign In</button>
         </div>
       )
       case this.Type.LOADING:
         return(
-          <Loader 
-            type="Circles"
-            color="#00BFFF"
-            height={60}
-            width={60}
-          />
+          <div className="auth spinner">
+            <Loader 
+              type="Puff"
+              color="#e2a917"
+              height={30}
+              width={30}
+            />
+          </div>
         )
     }
+  }
+
+
+  render(){
+    return (this.renderByType(this.state.type));
   }
 }
 

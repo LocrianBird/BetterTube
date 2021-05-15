@@ -16,11 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from BetterTube.views import index, home, request_authorization_url
+from BetterTube.views import index, home, request_authorization_url, signin, get_user_data
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", index, name="index"),
     path("home/", home),
-    path("request_authorization_url/", request_authorization_url)
+    path("request_authorization_url/", request_authorization_url),
+    path("signin/", signin),
+    path("get_user_data/", get_user_data)
 ]

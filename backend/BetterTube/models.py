@@ -7,31 +7,31 @@ from django.contrib.auth.models import AbstractUser
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, client_id, token=None, refresh_token=None, token_uri=None, client_secret=None, avatar_url=None):
+    def create_user(self, user_id, first_name=None, last_name=None, email=None, access_token=None, refresh_token=None, id_token=None, avatar_url=None):
         user = User()
-        user.client_id = client_id
-        user.token = token
+        user.user_id = user_id
+        user.access_token = access_token
+        user.id_token = id_token
         user.refresh_token = refresh_token
-        user.token_uri = token_uri
-        user.client_secret = client_secret
         user.avatar_url = avatar_url
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
         user.save(using=self._db)
         return user
-
 
     def create_super_user(self):
         pass
 
 
 class User(AbstractUser):
-    client_id = models.TextField(unique=True, primary_key=True)
-    token = models.TextField(null=True)
+    user_id = models.TextField(unique=True, primary_key=True)
+    access_token = models.TextField(null=True)
+    id_token = models.TextField(null=True)
     refresh_token = models.TextField(null=True)
-    token_uri = models.TextField(null=True)
-    client_secret = models.TextField(null=True)
     avatar_url = models.TextField(null=True)
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'client_id'
+    USERNAME_FIELD = 'user_id'
     REQUIRED_FIELDS = []

@@ -3,6 +3,7 @@ import '../ComponentStyle/header.css';
 import BetterTubeLogo from '../ComponentStyle/img/BetterTubeLogo.png';
 import SearchLogo from '../ComponentStyle/img/search.png';
 import Auth from './Auth'
+import MenuBtn1 from '../ComponentStyle/img/more_inactive.png'
 
 
 class Header extends React.Component {
@@ -14,10 +15,8 @@ class Header extends React.Component {
   render(){
     return(
       <div className="header">
-        <button className="menu-button">
-          <span className="menu-line"></span>
-          <span className="menu-line"></span>
-          <span className="menu-line"></span>
+        <button className="menu-btn">
+          <img src={MenuBtn1} height="25px"/>
         </button>
         <img src={BetterTubeLogo} alt="BetterTube Logo" className="logo">
         </img>

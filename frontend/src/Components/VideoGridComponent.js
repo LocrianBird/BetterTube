@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import '../ComponentStyle/videoGridStyle.css';
 import axios from 'axios';
 import RefreshBtn from '../ComponentStyle/img/refresh.png';
-
+import Loader from 'react-loader-spinner';
 
 const VideoCard = (props) => {
   return(
@@ -44,7 +44,6 @@ class VideoGrid extends React.Component {
     }
     axios.get(window.location.origin + '/home', config)
     .then(res=>{
-      console.log(res.data);
       this.setState({
         videoGridState: res.data
       })
@@ -57,23 +56,34 @@ class VideoGrid extends React.Component {
   render(){
     return(
       <div className="home">
-        <div className="video-grid-info video-grid-new">
-          <button className="video-grid-refresh-btn">
-            <img src={RefreshBtn} className="video-grid-refresh" width="40px" height="40px"/>
-          </button>
-          <p className="video-grid-text new">New</p>
-        </div>
-        <div className="video-grid">
-          {this.state.videoGridState.map((video) => {
-            return <VideoCard 
-                    thumbnail={video.thumbnail} 
-                    caption={video.caption} 
-                    link={video.link} 
-                    time={video.time}
-                    timeposted={video.timeposted}
-                    creator={video.creator}/>
-          })}
-        </div>
+        { this.state.videoGridState.length > 0 &&
+          <div className="video-grid-info video-grid-new" id="video-grid-new">
+            <button className="video-grid-refresh-btn">
+              <img src={RefreshBtn} className="video-grid-refresh" width="40px" height="40px"/>
+            </button>
+            <p className="video-grid-text new">New</p>
+          </div>
+        }
+        { this.state.videoGridState.length === 0 ? 
+          <div className="onload-spinner">
+            <Loader 
+              type="Puff"
+              color="#e2a917"
+              height={50}
+              width={50} />
+            </div> :
+          <div className="video-grid">
+            {this.state.videoGridState.map((video) => {
+              return <VideoCard 
+                      thumbnail={video.thumbnail} 
+                      caption={video.caption} 
+                      link={video.link} 
+                      time={video.time}
+                      timeposted={video.timeposted}
+                      creator={video.creator}/>
+            })}
+          </div>
+        }
       </div>
     )
   }
