@@ -9,15 +9,15 @@
   align-items: center;
   padding-top: 10px;
   padding-bottom: 10px;
-  padding-left: 40px;
-  padding-right: 115px;
-  margin-bottom: 30px;
+  padding-left: 117px;
+  padding-right: 90px;
   position: sticky;
   font-family: 'Roboto', sans-serif;
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #242222;
+  background-color: #1f1d1d;
+  box-shadow: 0 1px 1px #1b1505;
   z-index: 100;
 }
 
@@ -29,20 +29,10 @@
   border-radius: 20px;
 }
 
-.menu-btn {
-  background-color: transparent;
-  box-shadow: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  margin-top: 5px;
-}
-
 .logo {
-  margin-left: 40px;
   margin-right: 70px;
-  width: 150px;
-  height: 30px;
+  width: 200px;
+  height: 40px;
 }
 
 .input-group {
@@ -51,10 +41,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-right: 17px;
+  padding-right: 15px;
   max-width: 830px;
   width: 50%;
-  margin-right: 40px;
+  margin-left: 50px;
 }
 
 .input-search {

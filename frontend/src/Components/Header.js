@@ -15,9 +15,9 @@ class Header extends React.Component {
   render(){
     return(
       <div className="header">
-        <button className="menu-btn">
+        {/* <button className="menu-btn">
           <img src={MenuBtn1} height="25px"/>
-        </button>
+        </button> */}
         <img src={BetterTubeLogo} alt="BetterTube Logo" className="logo">
         </img>
         <form className="input-group">

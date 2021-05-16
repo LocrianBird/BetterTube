@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import '../ComponentStyle/videoGridStyle.css';
 import axios from 'axios';
-import RefreshBtn from '../ComponentStyle/img/refresh.png';
+import Refresh from '../ComponentStyle/img/refresh.png';
 import Loader from 'react-loader-spinner';
+
 
 const VideoCard = (props) => {
   return(
@@ -57,11 +58,11 @@ class VideoGrid extends React.Component {
     return(
       <div className="home">
         { this.state.videoGridState.length > 0 &&
-          <div className="video-grid-info video-grid-new" id="video-grid-new">
-            <button className="video-grid-refresh-btn">
-              <img src={RefreshBtn} className="video-grid-refresh" width="40px" height="40px"/>
+          <div className="video-grid-info-wrapper">
+            <button className="video-grid-info video-grid-new" id="video-grid-new">
+              <img src={Refresh} className="video-grid-refresh" width="30px" height="30px"/>
+              <p className="video-grid-text new">What's new</p>
             </button>
-            <p className="video-grid-text new">New</p>
           </div>
         }
         { this.state.videoGridState.length === 0 ? 
