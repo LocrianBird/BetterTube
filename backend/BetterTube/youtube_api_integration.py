@@ -5,8 +5,10 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
 import dateutil.parser
+import google.oauth2.credentials
 from google.auth.transport import requests
 from google.oauth2 import id_token
+from googleapiclient.http import HttpRequest
 from isoduration import parse_duration
 
 scopes = ["https://www.googleapis.com/auth/youtube.readonly", "https://www.googleapis.com/auth/userinfo.profile",
@@ -24,6 +26,32 @@ def get_client_secret():
 def verify_token_and_return_userdata(token, client_id):
     return id_token.verify_oauth2_token(token, requests.Request(), client_id)
 
+def get_subscriptions(user):
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
+    api_service_name = "youtube"
+    api_version = "v3"
+    get_client_secret()
+
+    # Get credentials and create an API client
+    credentials = google.oauth2.credentials.Credentials(token=user.access_token,
+                                                        refresh_token=user.refresh_token,
+                                                        token_uri=user.token_uri,
+                                                        client_id=user.client_id,
+                                                        client_secret=user.client_secret)
+    youtube = googleapiclient.discovery.build(
+        api_service_name, api_version, developerKey=os.environ["developerKey"], credentials=credentials)
+
+    request = youtube.subscriptions().list(
+        part="snippet,contentDetails",
+        mine=True,
+        order="unread",
+        maxResults=5
+    )
+    response = request.execute()
+    os.remove(client_secrets_file)
+    return response
+
 
 def get_authorization_url():
     get_client_secret()
@@ -38,15 +66,6 @@ def get_authorization_url():
     return authorization_url, state
 
 
-def get_profile_data():
-    user_info_service = googleapiclient.discovery.build(
-        serviceName='oauth2', version='v2',
-        developerKey=os.environ["developerKey"])
-    user_info = user_info_service.userinfo().get().execute()
-    if user_info and user_info.get('id'):
-        return user_info
-
-
 def exchange_url_for_tokens(url, state):
     get_client_secret()
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
@@ -57,6 +76,58 @@ def exchange_url_for_tokens(url, state):
     flow.fetch_token(authorization_response=url)
     os.remove(client_secrets_file)
     return flow.credentials
+
+
+def get_channel_videos(user, channel_id):
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
+    api_service_name = "youtube"
+    api_version = "v3"
+    get_client_secret()
+
+    # Get credentials and create an API client
+    credentials = google.oauth2.credentials.Credentials(token=user.access_token,
+                                                        refresh_token=user.refresh_token,
+                                                        token_uri=user.token_uri,
+                                                        client_id=user.client_id,
+                                                        client_secret=user.client_secret)
+    youtube = googleapiclient.discovery.build(
+        api_service_name, api_version, developerKey=os.environ["developerKey"], credentials=credentials)
+
+    request = youtube.search().list(
+        part="id",
+        channelId=channel_id,
+        order="date",
+        maxResults=8
+    )
+    response = request.execute()
+    os.remove(client_secrets_file)
+    return response
+
+
+def get_videos_by_ids(user, videos_ids):
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
+    api_service_name = "youtube"
+    api_version = "v3"
+    get_client_secret()
+
+    # Get credentials and create an API client
+    credentials = google.oauth2.credentials.Credentials(token=user.access_token,
+                                                        refresh_token=user.refresh_token,
+                                                        token_uri=user.token_uri,
+                                                        client_id=user.client_id,
+                                                        client_secret=user.client_secret)
+    youtube = googleapiclient.discovery.build(
+        api_service_name, api_version, developerKey=os.environ["developerKey"], credentials=credentials)
+
+    request = youtube.videos().list(
+        part="snippet,contentDetails,statistics",
+        id=','.join(videos_ids)
+    )
+    response = request.execute()
+    os.remove(client_secrets_file)
+    return [convert_youtube_json_to_bettertube_json(item) for item in response['items']]
 
 
 def get_most_popular_videos_in_region(region):
@@ -82,22 +153,28 @@ def get_most_popular_videos_in_region(region):
         maxResults=50
     )
     response = request.execute()
+    try:
+        os.remove(client_secrets_file)
+    except:
+        pass
+
+    return [convert_youtube_json_to_bettertube_json(item) for item in response['items']]
+
+
+def convert_youtube_json_to_bettertube_json(youtube_json):
 
     def duration_to_string(duration):
         if duration.hours == Decimal(0):
             return f"{duration.minutes}:{duration.seconds}"
         return f"{duration.hours}:{duration.minutes}:{duration.seconds}"
 
-    os.remove(client_secrets_file)
-
-    return [{"thumbnail": item["snippet"]["thumbnails"]["medium"]["url"],
-             "caption": item["snippet"]["title"],
-             "link": f"https://www.youtube.com/watch?v={item['id']}",
-             "time": duration_to_string(parse_duration(item["contentDetails"]["duration"]).time),
-             "timeposted": dateutil.parser.parse(item["snippet"]["publishedAt"]).strftime('%d %b %Y'),
-             "creator": item["snippet"]["channelTitle"]
-             } for item in response['items']]
-
+    return {"thumbnail": youtube_json["snippet"]["thumbnails"]["medium"]["url"],
+             "caption": youtube_json["snippet"]["title"],
+             "link": f"https://www.youtube.com/watch?v={youtube_json['id']}",
+             "time": duration_to_string(parse_duration(youtube_json["contentDetails"]["duration"]).time),
+             "timeposted": dateutil.parser.parse(youtube_json["snippet"]["publishedAt"]).strftime('%d %b %Y'),
+             "creator": youtube_json["snippet"]["channelTitle"]
+             }
 
 if __name__ == "__main__":
-    print(get_profile_data())
+    pass

@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, user_id, first_name=None, last_name=None, email=None, access_token=None, refresh_token=None, id_token=None, avatar_url=None):
+    def create_user(self, user_id, token_uri=None, client_id=None, client_secret=None, first_name=None, last_name=None, email=None, access_token=None, refresh_token=None, id_token=None, avatar_url=None):
         user = User()
         user.user_id = user_id
         user.access_token = access_token
@@ -17,6 +17,9 @@ class UserManager(BaseUserManager):
         user.first_name = first_name
         user.last_name = last_name
         user.email = email
+        user.token_uri = token_uri
+        user.client_id = client_id
+        user.client_secret = client_secret
         user.save(using=self._db)
         return user
 
@@ -30,7 +33,9 @@ class User(AbstractUser):
     id_token = models.TextField(null=True)
     refresh_token = models.TextField(null=True)
     avatar_url = models.TextField(null=True)
-
+    token_uri = models.TextField(null=True)
+    client_id = models.TextField(null=True)
+    client_secret = models.TextField(null=True)
     objects = UserManager()
 
     USERNAME_FIELD = 'user_id'

@@ -9,7 +9,7 @@
   align-items: center;
   padding-top: 10px;
   padding-bottom: 10px;
-  padding-left: 117px;
+  padding-left: 80px;
   padding-right: 90px;
   position: sticky;
   font-family: 'Roboto', sans-serif;
@@ -44,7 +44,7 @@
   padding-right: 15px;
   max-width: 830px;
   width: 50%;
-  margin-left: 50px;
+  margin-left: 70px;
 }
 
 .input-search {

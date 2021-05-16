@@ -38,13 +38,20 @@ class VideoGrid extends React.Component {
 
 
   componentDidMount() {
+    const browserLocales =
+    navigator.languages === undefined
+      ? [navigator.language]
+      : navigator.languages;
+    const locale = browserLocales != undefined ? browserLocales[0] : "en-US";
+    const formattedLocale = locale.split("-")[1];
     let config = {
-      headers: {
-        Authorization: `Bearer ${this.props.token}`,
+      params: {
+        region: formattedLocale,
       }
     }
     axios.get(window.location.origin + '/home', config)
     .then(res=>{
+      console.log(res.data);
       this.setState({
         videoGridState: res.data
       })

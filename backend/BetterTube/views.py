@@ -4,21 +4,35 @@ from django.shortcuts import render, redirect
 
 from BetterTube.models import User
 from BetterTube.youtube_api_integration import get_most_popular_videos_in_region, get_authorization_url, \
-    exchange_url_for_tokens, verify_token_and_return_userdata
+    exchange_url_for_tokens, verify_token_and_return_userdata, get_subscriptions, get_channel_videos, get_videos_by_ids
 
 
 def index(request):
     return render(request, "build/index.html")
 
+
 def home(request):
     if request.user.is_authenticated:
-        return HttpResponse(status=204)
+        videos = []
+        subscriptions = get_subscriptions(request.user)["items"]
+        print(subscriptions)
+        for subscription in subscriptions:
+            channel_videos = get_channel_videos(request.user, subscription["snippet"]["resourceId"]["channelId"])["items"]
+            print(subscription["snippet"]["resourceId"]["channelId"])
+            print(channel_videos)
+            videos += get_videos_by_ids(request.user,
+                                        [search_result["id"]["videoId"] for search_result in channel_videos])
+            print(videos)
+        return JsonResponse(videos, safe=False)
     else:
-        return JsonResponse(get_most_popular_videos_in_region("US"), safe=False)
+        region = request.GET.get('region', 'US')
+        return JsonResponse(get_most_popular_videos_in_region(region), safe=False)
+
 
 def get_user_data(request):
     if request.user.is_authenticated:
-        return JsonResponse({'avatar': request.user.avatar_url, 'name': request.user.first_name + ' ' + request.user.last_name})
+        return JsonResponse(
+            {'avatar': request.user.avatar_url, 'name': request.user.first_name + ' ' + request.user.last_name})
     else:
         return HttpResponse(status=401)
 
@@ -28,6 +42,7 @@ def request_authorization_url(request):
     response = JsonResponse({'authorization_url': authorization_url})
     response.set_cookie("state", state, domain="localhost:8000", secure=True, httponly=True)
     return response
+
 
 def signin(request):
     state = request.COOKIES.get("state")
@@ -39,14 +54,16 @@ def signin(request):
     except:
         user = User()
         user.user_id = user_id
-        user.access_token = credentials.token
-        user.id_token = credentials.id_token
-        user.refresh_token = credentials.refresh_token
-        user.avatar_url = userdata["picture"]
-        user.first_name = userdata["given_name"]
-        user.last_name = userdata["family_name"]
-        user.email = userdata["email"]
-        user.save()
+    user.access_token = credentials.token
+    user.id_token = credentials.id_token
+    user.refresh_token = credentials.refresh_token
+    user.avatar_url = userdata["picture"]
+    user.first_name = userdata["given_name"]
+    user.last_name = userdata["family_name"]
+    user.email = userdata["email"]
+    user.token_uri = credentials.token_uri
+    user.client_id = credentials.client_id
+    user.client_secret = credentials.client_secret
+    user.save()
     login(request, user)
     return redirect('/')
-
